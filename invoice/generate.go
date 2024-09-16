@@ -13,6 +13,7 @@ import (
 	"github.com/johnfercher/maroto/v2/pkg/config"
 	"github.com/johnfercher/maroto/v2/pkg/consts/align"
 	"github.com/johnfercher/maroto/v2/pkg/consts/fontstyle"
+	"github.com/johnfercher/maroto/v2/pkg/consts/pagesize"
 	"github.com/johnfercher/maroto/v2/pkg/core"
 	"github.com/johnfercher/maroto/v2/pkg/props"
 )
@@ -31,8 +32,10 @@ func Generate(data *model.Request) (model.Response, error) {
 }
 
 func GetMaroto(data *model.Request) core.Maroto {
-	cfg := config.NewBuilder().Build()
-	cfg.DefaultFont.Color = getDarkGrayColor()
+	cfg := config.NewBuilder().
+		WithPageSize(pagesize.A4).
+		WithDefaultFont(&props.Font{Color: getDarkGrayColor()}).
+		Build()
 
 	mrt := maroto.New(cfg)
 	m := maroto.NewMetricsDecorator(mrt)
