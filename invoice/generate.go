@@ -24,7 +24,6 @@ func Generate(data *model.Request) (model.Response, error) {
 	document, err := m.Generate()
 	if err != nil {
 		log.Fatal(err.Error())
-		return model.Response{}, err
 	}
 
 	response := model.Response{Data: document.GetBytes()}
