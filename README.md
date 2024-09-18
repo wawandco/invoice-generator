@@ -1,6 +1,6 @@
 # Invoice Generator
 
-Invoice Generator is an API service built with Encore to create PDF invoices with Maroto V2 based on provided data.
+Invoice Generator is an API service built with Encore to create PDF invoices with Maroto V2 based on provided data. This repo was created as example for a blog post about [Building an Invoice Generator Service with Encore and Maroto in Go](https://wawand.co/blog/posts/building-an-invoice-generator-service-with-encore-and-maroto-in-go/).
 
 ## Setup
 
@@ -42,7 +42,6 @@ And call http://localhost:4000 to use the app's endpoints.
 - **Method**: POST
 - **Path**: `/generate-invoice`
 - **Description**: Generates a PDF invoice based on the [provided data](https://github.com/wawandco/invoice-generator/blob/main/model/request.go) and returns the PDF bytes.
-
 
 ## Related Documentation
 
