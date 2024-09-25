@@ -3,6 +3,7 @@ module encore.app
 go 1.22.2
 
 require (
+	encore.dev v1.37.0
 	github.com/johnfercher/maroto/v2 v2.1.2
 	github.com/stretchr/testify v1.8.4
 )
