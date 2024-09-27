@@ -1,6 +1,8 @@
 package model
 
-// Response is the response data for the GenerateInvoice endpoint.
+// Response is the API response data.
 type Response struct {
-	Data []byte
+	Status  int      `json:"status"`
+	Invoice *Invoice `json:"invoice,omitempty"`
+	Message string   `json:"message,omitempty"`
 }

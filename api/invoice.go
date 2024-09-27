@@ -2,11 +2,12 @@ package api
 
 import (
 	"context"
-	"strings"
+	"database/sql"
+	"errors"
+	"net/http"
 
 	"encore.app/invoice"
 	"encore.app/model"
-	"encore.dev/beta/auth"
 	"encore.dev/beta/errs"
 )
 
@@ -14,30 +15,59 @@ import (
 //
 //encore:api auth method=POST path=/generate-invoice
 func GenerateInvoice(ctx context.Context, data *model.Request) (model.Response, error) {
-	response, err := invoice.Generate(data)
+	invoiceData, err := invoice.Generate(data)
 	if err != nil {
-		return model.Response{}, err
+		errorResponse := &errs.Error{
+			Code:    errs.Internal,
+			Message: err.Error(),
+		}
+
+		return model.Response{}, errorResponse
+	}
+
+	// Storing the invoice
+	invoice, err := createInvoice(ctx, invoiceData)
+	if err != nil {
+		errorResponse := &errs.Error{
+			Code:    errs.Internal,
+			Message: err.Error(),
+		}
+
+		return model.Response{}, errorResponse
+	}
+
+	response := model.Response{
+		Status:  http.StatusCreated,
+		Invoice: &invoice,
 	}
 
 	return response, nil
 }
 
-// Data can be named whatever you prefer (but must be exported).
-// type Data struct {
-// 	Username string
-// 	// ...
-// }
-
-// AuthHandler can be named whatever you prefer (but must be exported).
+// GetInvoice returns the PDF's byte data based on the given id.
 //
-//encore:authhandler
-func AuthHandler(ctx context.Context, token string) (auth.UID, error) {
-	if strings.EqualFold(token, secrets.APIToken) {
-		return "accepted", nil
+//encore:api auth method=GET path=/get-invoice/:id
+func GetInvoice(ctx context.Context, id int) (model.Response, error) {
+	invoice, err := findInvoice(ctx, id)
+
+	if err != nil {
+		errorResponse := &errs.Error{
+			Code:    errs.Internal,
+			Message: err.Error(),
+		}
+
+		if errors.Is(err, sql.ErrNoRows) {
+			errorResponse.Code = errs.NotFound
+			errorResponse.Message = "invoice not found"
+		}
+
+		return model.Response{}, errorResponse
 	}
 
-	return "", &errs.Error{
-		Code:    errs.Unauthenticated,
-		Message: "invalid token",
+	response := model.Response{
+		Status:  http.StatusOK,
+		Invoice: &invoice,
 	}
+
+	return response, nil
 }

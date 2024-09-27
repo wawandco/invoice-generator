@@ -38,7 +38,7 @@ func TestGeneratePDF(t *testing.T) {
 	response, err := invoice.Generate(request)
 
 	assert.NoError(t, err)
-	assert.NotEmpty(t, response.Data, "PDF data should not be empty")
+	assert.NotEmpty(t, response, "PDF data should not be empty")
 
 	outputFolder := "pdf"
 	outputFile := filepath.Join(outputFolder, fmt.Sprintf("invoice_%s.pdf", request.InvoiceNumber))
@@ -47,6 +47,6 @@ func TestGeneratePDF(t *testing.T) {
 	err = os.MkdirAll(outputFolder, os.ModePerm)
 	assert.NoError(t, err)
 
-	err = os.WriteFile(outputFile, response.Data, 0644)
+	err = os.WriteFile(outputFile, response, 0644)
 	assert.NoError(t, err)
 }

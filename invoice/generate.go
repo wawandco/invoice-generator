@@ -18,7 +18,7 @@ import (
 	"github.com/johnfercher/maroto/v2/pkg/props"
 )
 
-func Generate(data *model.Request) (model.Response, error) {
+func Generate(data *model.Request) ([]byte, error) {
 	m := GetMaroto(data)
 
 	document, err := m.Generate()
@@ -26,8 +26,7 @@ func Generate(data *model.Request) (model.Response, error) {
 		log.Fatal(err.Error())
 	}
 
-	response := model.Response{Data: document.GetBytes()}
-	return response, nil
+	return document.GetBytes(), nil
 }
 
 func GetMaroto(data *model.Request) core.Maroto {
