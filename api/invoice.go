@@ -51,17 +51,17 @@ func GetInvoice(ctx context.Context, id int) (model.Response, error) {
 	invoice, err := findInvoice(ctx, id)
 
 	if err != nil {
-		errorResponse := &errs.Error{
-			Code:    errs.Internal,
+		apiResponse := model.Response{
+			Status:  http.StatusInternalServerError,
 			Message: err.Error(),
 		}
 
 		if errors.Is(err, sql.ErrNoRows) {
-			errorResponse.Code = errs.NotFound
-			errorResponse.Message = "invoice not found"
+			apiResponse.Status = http.StatusNotFound
+			apiResponse.Message = "invoice not found"
 		}
 
-		return model.Response{}, errorResponse
+		return apiResponse, err
 	}
 
 	response := model.Response{
